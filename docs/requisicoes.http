@@ -1,0 +1,113 @@
+### Variáveis
+@base = http://localhost:8000/api/v1
+@token = COLE_AQUI_O_TOKEN_DO_LOGIN
+
+### Login (admin)
+POST {{base}}/auth/login
+Content-Type: application/json
+Accept: application/json
+
+{ "email": "ana.silva@example.com", "password": "senha123" }
+
+### Quem está logado
+GET {{base}}/auth/me
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Dashboard
+GET {{base}}/dashboard
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Livros disponíveis
+GET {{base}}/livros?situacao=disponiveis&per_page=6
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Cadastrar livro + primeiro exemplar (admin)
+POST {{base}}/livros
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "titulo": "Iracema", "autor": "José de Alencar", "isbn": "978-85-0001-010",
+  "preco_venda": 19.90, "preco_emprestimo": 3.00,
+  "exemplar": { "codigo_barras": "7890100000011", "estado": "novo" }
+}
+
+### Adicionar mais um exemplar (um por vez)
+POST {{base}}/livros/10/exemplares
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{ "codigo_barras": "7890100000012", "estado": "bom" }
+
+### Leitor: autocomplete com pendências
+GET {{base}}/clientes?busca=mar
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Prévia do empréstimo
+POST {{base}}/emprestimos/previa
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{ "cliente_id": 8, "livro_id": 7 }
+
+### Registrar empréstimo
+POST {{base}}/emprestimos
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{ "cliente_id": 8, "livro_id": 7, "data_devolucao_prevista": "2026-11-20" }
+
+### Empréstimos atrasados
+GET {{base}}/emprestimos?status=atrasados
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Registrar devolução
+PATCH {{base}}/emprestimos/4/devolucao
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{ "estado": "bom" }
+
+### Resumo do carrinho
+POST {{base}}/vendas/previa
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{ "itens": [ { "livro_id": 9, "quantidade": 1 }, { "livro_id": 1, "quantidade": 2 } ], "desconto": 5 }
+
+### Finalizar venda
+POST {{base}}/vendas
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{ "cliente_id": 3, "forma_pagamento_id": 3, "desconto": 0, "itens": [ { "livro_id": 1, "quantidade": 2 } ] }
+
+### Cadastrar usuário (funcionário: só admin)
+POST {{base}}/usuarios
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{ "nome": "Maria Lopes", "email": "maria@example.com", "telefone": "(85) 98888-0000", "tipo": "funcionario", "matricula": "MAT-0100", "cargo": "Atendente", "password": "senha1234", "password_confirmation": "senha1234" }
+
+### Relatórios do mês
+GET {{base}}/relatorios?mes=2026-10
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Vendas por forma de pagamento num período
+GET {{base}}/relatorios/vendas-por-pagamento?de=2026-10-01&ate=2026-10-31
+Authorization: Bearer {{token}}
+Accept: application/json
